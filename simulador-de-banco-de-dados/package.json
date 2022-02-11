@@ -1,0 +1,29 @@
+{
+  "name": "simulador-de-banco-de-dados",
+  "version": "1.0.0",
+  "description": "Pacote com Express para simular operações em um banco de dados real, mas utilizando objetos JSON ao invés.",
+  "main": "database_api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pe-Guedss/Express-Projects.git"
+  },
+  "keywords": [
+    "Database",
+    "JavaScript",
+    "Express",
+    "API",
+    "RESTFul"
+  ],
+  "author": "Pedro de Oliveira Guedes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pe-Guedss/Express-Projects/issues"
+  },
+  "homepage": "https://github.com/Pe-Guedss/Express-Projects#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}
