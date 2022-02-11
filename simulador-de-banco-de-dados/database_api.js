@@ -1,3 +1,3 @@
-var games_database = require("./data/game_database.json")[0];
+var games_database = require("./data/game_database.json");
 
-console.log(games_database["The Witcher"]);
+console.log(games_database);
