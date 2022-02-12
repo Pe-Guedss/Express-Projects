@@ -1,7 +1,9 @@
-const router = require('express').Router();
+const router = require("express").Router();
 
-router.get('/', (req, res)=> {
-    res.send("Implementar rota Create!")
+var dataBase = require("../data/dataBase");
+
+router.get("/", (req, res)=> {
+    res.send("Implementar rota CREATE!");
 });
 
 module.exports = router;
