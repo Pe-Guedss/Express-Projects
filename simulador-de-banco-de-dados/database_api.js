@@ -3,7 +3,7 @@ const app = express ();
 
 app.use (express.json());
 
-const createRouter = require("./routes/create");
+const createRouter = require("./routes/create/create");
 const deleteRouter = require("./routes/delete");
 const readRouter = require("./routes/read");
 const updateRouter = require("./routes/update");
