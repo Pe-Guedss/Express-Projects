@@ -4,17 +4,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CREATE</title>
+    <title>CREATE Route</title>
 </head>
 <body>
-    <h1>Olá Mundo</h1>
+    <h1>Bem-vindo(a) à rota CREATE!</h1>
+    <hr>
+    <div>
+        <p>Por enquanto, as requests permitidas são:</p>
+        <ul>
+            <li>
+                <a href="https://localhost:3000/create/new_table/nome_da_tabela">https://localhost:3000/create/new_table/nome_da_tabela</a>
+            </li>
+            <li>
+                <a href="https://localhost:3000/create/insert/nome_da_tabela">https://localhost:3000/create/insert/nome_da_tabela</a>
+            </li>
+        </ul>
+        <div>
+            <p>
+                <b>Obs:</b> Ambas são do tipo POST, sendo que a última rota depende de um objeto JSON com as propriedades e valores a serem inseridos na tabela informada.
+                <br><br>
+                Veja um exemplo abaixo:
+            </p>
+            <div style="margin-left: 30px; border: 1px solid black; border-radius: 25px; padding: 25px; width: fit-content;">
+                {
+                    <div style="margin-left: 15px;">
+                        <p>
+                            element_id: "id do elemento da tabela, se não existir será criada uma nova tupla com esse identificador",
+                        </p>
+                        <p>
+                            "Nome propriedade 1": "valor da propriedade 1",
+                        </p>
+                        <p>
+                            "Nome propriedade 2": "valor da propriedade 2",
+                        </p>
+                        <p>
+                            "Nome propriedade 3": "valor da propriedade 3",
+                        </p>
+                        . <br>
+                        . <br>
+                        . <br>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-
-<!-- Bem vindo(a) à rota CREATE!
-    \n\n
-    Por enquanto, as requests permitidas são:\n
-     - https://localhost/create/nome_db\n
-     - https://localhost/create/insert/nome_db
-     \n\n
-    Ambas são do tipo POST, sendo que a segunda necessita de um objeto JSON a ser inserido na base de dados. -->
