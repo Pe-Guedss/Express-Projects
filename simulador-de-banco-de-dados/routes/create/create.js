@@ -10,9 +10,13 @@ router.get("/", (req, res)=> {
 router.post("/new_table/:tableName", (req, res) => {
     const { tableName } = req.params;
 
-    dataBase[tableName] = {};
-
-    res.status(200).send(dataBase);
+    if (dataBase[tableName]) {
+        res.status(500).send("This table already exists. Please try another name.")
+    }
+    else {
+        dataBase[tableName] = {};
+        res.status(200).send(dataBase);
+    }
 });
 
 router.post("/insert/:tableName", (req, res) => {
