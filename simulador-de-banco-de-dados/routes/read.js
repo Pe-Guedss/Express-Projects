@@ -4,17 +4,37 @@ const res = require('express/lib/response');
 var dataBase = require("../data/dataBase");
 
 router.get('/', (req, res)=> {
-    res.send(dataBase.lojaDeJogos)
+    res.send(dataBase)
 });
 
-router.get('/:jogo', (req, res) =>{
-    const Jogo = req.params.jogo;
-    res.send(dataBase.lojaDeJogos[Jogo]);
+router.get('/:tableName', (req, res) =>{
+    const { tableName } = req.params;
+    if(!dataBase[tableName]){
+        res.status(404).send(`Table called ${tableName} Not Found`);
+    }
+    else{
+        res.send(dataBase[tableName]);
+    }
+});
+
+router.get('/:tableName/:id', (req, res) =>{
+    const { tableName, id} = req.params;
+    if(!dataBase[tableName][id]){
+        res.status(404).send(`${id} Not Found`);
+    }
+    else{
+        res.send(dataBase[tableName][id]);
+    }
 })
 
-router.get('/:jogo/:propriedade' , (req, res) => {
-    const {jogo, propriedade} = req.params;
-    res.send(dataBase.lojaDeJogos[jogo][propriedade]);
+router.get('/:tableName/:id/:property' , (req, res) => {
+    const { tableName, id, property} = req.params;
+    if(!dataBase[tableName][id][property]){
+        res.status(404).send(`${id}'s Property Called ${property} Not Found`);
+    }
+    else{
+        res.send(dataBase[tableName][id][property]);
+    }
 })
 
 module.exports = router;
