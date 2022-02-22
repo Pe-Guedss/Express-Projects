@@ -4,7 +4,8 @@
   "description": "Pacote com Express para simular operações em um banco de dados real, mas utilizando objetos JSON ao invés.",
   "main": "database_api.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon database_api.js"
   },
   "repository": {
     "type": "git",
@@ -25,5 +26,8 @@
   "homepage": "https://github.com/Pe-Guedss/Express-Projects#readme",
   "dependencies": {
     "express": "^4.17.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
