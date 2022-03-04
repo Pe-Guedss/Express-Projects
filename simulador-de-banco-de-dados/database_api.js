@@ -2,7 +2,9 @@ const express = require("express");
 const app = express ();
 
 app.use (express.json());
-
+app.use (express.urlencoded({
+    extended: false,
+}));
 const createRouter = require("./routes/create/create");
 const deleteRouter = require("./routes/delete");
 const readRouter = require("./routes/read");
