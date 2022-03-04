@@ -7,7 +7,7 @@ package-lock.json
 # Coveralls
 .nyc_output
 coverage
-
+*.DS_Store
 # Benchmarking
 benchmarks/graphs
 
