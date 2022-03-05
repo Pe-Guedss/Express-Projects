@@ -7,9 +7,12 @@ package-lock.json
 # Coveralls
 .nyc_output
 coverage
-*.DS_Store
+
 # Benchmarking
 benchmarks/graphs
+
+# DataBases
+*.sqlite
 
 # ignore additional files using core.excludesFile
 # https://git-scm.com/docs/gitignore
