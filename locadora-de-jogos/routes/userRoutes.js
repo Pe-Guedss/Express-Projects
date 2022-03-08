@@ -1,5 +1,10 @@
 const express = require('express');
 const router = express.Router();
+
+// Constantes para manejamento de excessões
+const asyncHandler = require('express-async-handler');
+const createError = require('http-errors');
+
 const Usuarios = require('../models/Usuario');
 
 router.use(express.json());
@@ -12,7 +17,7 @@ router.post('/', async (req, res) => {
         email: body.email,
         senha: body.senha
     }
-   await Usuarios.create(usuario);
+    await Usuarios.create(usuario);
 });
 
 
