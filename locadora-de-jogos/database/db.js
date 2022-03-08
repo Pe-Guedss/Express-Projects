@@ -4,13 +4,14 @@ const sequelize = new Sequelize({
     storage: './database/database.sqlite'
 })
 
-(async () => {
+const checkConection = async () => {
     try {
         await sequelize.authenticate();
         console.log('Connection has been established successfully!');
     } catch (error) {
         console.error('Unable to connect to the database due to: \n', error);
     }
-})();
+};
+checkConection();
 
 module.exports = sequelize;

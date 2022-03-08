@@ -10,6 +10,7 @@ router.post("/",  async (req, res)=> {
         senha: body.senha
     }
    await Usuario.create(usuario);
+   res.status(201).send('created');
 });
 
 module.exports = router;

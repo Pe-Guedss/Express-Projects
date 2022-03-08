@@ -8,9 +8,11 @@ app.use (express.urlencoded({
 
 const userRouter = require("./routes/userRoutes");
 const gameRouter = require("./routes/gameRoutes");
+const usersUpdate = require("./routes/usersUpdate");
 
 app.use("/users", userRouter);
 app.use("/games", gameRouter);
+app.use("/update", usersUpdate);
 
 
 app.listen (3001, () => {
