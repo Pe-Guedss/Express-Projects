@@ -1,5 +1,10 @@
 const express = require('express');
 const router = express.Router();
+
+// Constantes para manejamento de excessões
+const asyncHandler = require('express-async-handler');
+const createError = require('http-errors');
+
 const Jogos = require('../models/Jogo');
 
 router.use(express.json());
