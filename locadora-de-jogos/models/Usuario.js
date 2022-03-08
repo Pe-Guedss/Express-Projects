@@ -25,10 +25,16 @@ const Usuario = database.define('Usuario', {
 
 });
 Jogo.belongsTo(Usuario, {
-    constraint: true
+    constraint: true,
+    foreignKey: 'IdUsuario'
 });
-Usuario.hasMany(Jogo);
+Usuario.hasMany(Jogo, {
+    constraint: true,
+    foreignKey: 'IdUsuario'
+});
 
 Usuario.sync({alter: true, force: true});
+Jogo.sync({alter: true, force: true});
+
 module.exports = Usuario;
 

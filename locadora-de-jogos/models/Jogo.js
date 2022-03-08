@@ -30,6 +30,4 @@ const Jogo = database.define('Jogo', {
 
 })
 
-Jogo.sync({alter: true, force: true});
-
 module.exports = Jogo;
