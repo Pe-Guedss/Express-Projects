@@ -33,8 +33,8 @@ Usuario.hasMany(Jogo, {
     foreignKey: 'IdUsuario'
 });
 
-Usuario.sync({alter: true});
-Jogo.sync({alter: true});
+Usuario.sync();
+Jogo.sync();
 
 module.exports = Usuario;
 

@@ -11,7 +11,17 @@ router.use(express.json());
 
 // Rotas CREATE
 router.post('/', async (req, res) => {
-    res.status(404).send('Implementar rota POST.')
+    const body = req.body;
+    const jogo = {
+        nome_principal: body.nome_principal,
+        nome: body.nome,
+        ano: body.ano,
+        preco: body.preco,
+        genero: body.genero,
+        IdUsuario: body.IdUsuario
+    }
+    await Jogos.create(jogo);
+    res.status(200).send(jogo);
 });
 
 
