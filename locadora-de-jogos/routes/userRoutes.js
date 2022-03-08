@@ -22,9 +22,17 @@ router.post('/', async (req, res) => {
 
 
 // Rotas READ
-router.get('/', async (req, res) => {
-    res.status(404).send('Implementar rota READ.')
-});
+// Rotas READ
+router.get('/read_all/', asyncHandler (async (req, res, next) => {
+    try {
+        const users = await Usuarios.findAll();
+        res.status(200).json(users);
+    }
+    catch (error) {
+        next(createError(500, 'An error ocurred when trying to retrieve all data from the table "Usuarios".', error));
+        return;
+    }
+}));
 
 
 // Rotas UPDATE
