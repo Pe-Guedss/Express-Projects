@@ -1,6 +1,8 @@
 const {DataTypes} = require('sequelize');
 const database = require('../database/db');
+
 const Jogo = require('./Jogo');
+
 const Usuario = database.define('Usuario', {
     id: {
         type: DataTypes.INTEGER,
@@ -21,13 +23,12 @@ const Usuario = database.define('Usuario', {
         allowNull: false
     }
 
-})
+});
 Jogo.belongsTo(Usuario, {
     constraint: true
-})
+});
 Usuario.hasMany(Jogo);
-Jogo.sync({alter: true, force: true});
-Usuario.sync({alter: true, force: true})
-//Usuario.sync({alter: true});
+
+Usuario.sync({alter: true, force: true});
 module.exports = Usuario;
 
