@@ -16,10 +16,16 @@ router.post('/', async (req, res) => {
 
 
 // Rotas READ
-router.get('/read_all/', async (req, res) => {
-    const games = await Jogos.findAll();
-    res.status(404).json(games);
-});
+router.get('/read_all/', asyncHandler (async (req, res, next) => {
+    try {
+        const games = await Jogos.findAll();
+        res.status(200).json(games);
+    }
+    catch (error) {
+        next(createError(500, 'An error ocurred when trying to retrieve all data from the table "Jogos".', error));
+        return;
+    }
+}));
 
 
 // Rotas UPDATE
