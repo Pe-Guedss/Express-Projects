@@ -1,18 +1,39 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const Usuario = require('../models/Usuario');
+const Usuarios = require('../models/Usuario');
 
 router.use(express.json());
 
-router.post("/",  async (req, res)=> {
+// Rotas CREATE
+router.post('/', async (req, res) => {
     const body = req.body;
     const usuario = {
         nome: body.nome,
         email: body.email,
         senha: body.senha
     }
-   await Usuario.create(usuario);
+   await Usuarios.create(usuario);
 });
+
+
+// Rotas READ
+router.get('/', async (req, res) => {
+    res.status(404).send('Implementar rota READ.')
+});
+
+
+// Rotas UPDATE
+router.put('/', async (req, res) => {
+    res.status(404).send('Implementar rota UPDATE.')
+});
+
+
+// Rotas DELETE
+router.delete('/', async (req, res) => {
+    res.status(404).send('Implementar rota DELETE.')
+});
+
+
 
 router.use((error, req, res, next) => {
     // Seta o HTTP Status Code
