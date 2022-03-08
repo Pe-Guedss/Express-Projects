@@ -41,7 +41,7 @@ router.get('/read/by_pk/:pk', asyncHandler (async (req, res, next) => {
         res.status(200).json(user);
     }
     catch (error) {
-        next(createError(500, 'An error ocurred when trying to retrieve all data from the table "Usuarios".', error));
+        next(createError(500, `An error ocurred when trying get the user with Primary key: ${pk}.`, error));
         return;
     }
 }));
