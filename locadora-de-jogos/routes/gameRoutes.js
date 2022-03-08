@@ -6,25 +6,26 @@ router.use(express.json());
 
 // Rotas CREATE
 router.post('/', async (req, res) => {
-    res.status(404).send('Implementar rota POST.')
+    res.status(404).send('Implementar rota POST.');
 });
 
 
 // Rotas READ
-router.get('/', async (req, res) => {
-    res.status(404).send('Implementar rota READ.')
+router.get('/read_all/', async (req, res) => {
+    const games = await Jogos.findAll();
+    res.status(404).json(games);
 });
 
 
 // Rotas UPDATE
 router.put('/', async (req, res) => {
-    res.status(404).send('Implementar rota UPDATE.')
+    res.status(404).send('Implementar rota UPDATE.');
 });
 
 
 // Rotas DELETE
 router.delete('/', async (req, res) => {
-    res.status(404).send('Implementar rota DELETE.')
+    res.status(404).send('Implementar rota DELETE.');
 });
 
 
@@ -37,7 +38,7 @@ router.use((error, req, res, next) => {
     res.json({
         status: error.status,
         message: error.message
-    })
+    });
 });
 
-module.exports = router
+module.exports = router;
