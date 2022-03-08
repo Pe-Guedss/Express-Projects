@@ -27,6 +27,18 @@ router.get('/read_all/', asyncHandler (async (req, res, next) => {
     }
 }));
 
+router.get('/read/by_pk/:pk', asyncHandler (async (req, res, next) => {
+    const { pk } = req.params
+    try {
+        const game = await Jogos.findByPk(pk);
+        res.status(200).json(game);
+    }
+    catch (error) {
+        next(createError(500, `An error ocurred when trying get the game with Primary key: ${pk}.`, error));
+        return;
+    }
+}));
+
 
 // Rotas UPDATE
 router.put('/', async (req, res) => {
