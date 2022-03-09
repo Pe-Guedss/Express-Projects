@@ -35,9 +35,30 @@ router.put('/', async (req, res) => {
 
 
 // Rotas DELETE
-router.delete('/', async (req, res) => {
-    res.status(404).send('Implementar rota DELETE.')
-});
+router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
+    try {
+        const users = await Usuarios.findAll();
+        users.destroy();
+        res.status(200).json(users);
+    }
+    catch (error) {
+        next(createError(500, 'An error ocurred when trying to delete all data from the table "Usuarios".', error));
+        return;
+    }
+}));
+
+router.delete('/delete/by_pk/:pk', asyncHandler (async (req, res, next) => {
+    const { pk } = req.params
+    try {
+        const user = await Usuarios.findByPk(pk);
+        user.destroy();
+        res.status(200).json(user);
+    }
+    catch (error) {
+        next(createError(500, `An error ocurred when trying to delete the user with Primary key: ${pk}.`, error));
+        return;
+    }
+}));
 
 
 

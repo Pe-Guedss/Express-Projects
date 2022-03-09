@@ -28,9 +28,30 @@ router.put('/', async (req, res) => {
 
 
 // Rotas DELETE
-router.delete('/', async (req, res) => {
-    res.status(404).send('Implementar rota DELETE.')
-});
+router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
+    try {
+        const games = await Jogos.findAll();
+        games.destroy();
+        res.status(200).json(games);
+    }
+    catch (error) {
+        next(createError(500, 'An error ocurred when trying to delete all data from the table "Jogos".', error));
+        return;
+    }
+}));
+
+router.delete('/delete/by_pk/:pk', asyncHandler (async (req, res, next) => {
+    const { pk } = req.params
+    try {
+        const game = await Jogos.findByPk(pk);
+        game.destroy();
+        res.status(200).json(game);
+    }
+    catch (error) {
+        next(createError(500, `An error ocurred when trying to delete the game with Primary key: ${pk}.`, error));
+        return;
+    }
+}));
 
 
 
