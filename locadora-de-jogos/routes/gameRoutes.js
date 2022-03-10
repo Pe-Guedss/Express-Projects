@@ -31,6 +31,13 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
     const { id } = req.params
     try {
         const game = await Jogos.findByPk(id);
+
+        const { status, message } = validateReadRequest(game, id);
+        if (status != 200) {
+            next(createError(status, message));
+            return;
+        }
+
         res.status(200).json(game);
     }
     catch (error) {
