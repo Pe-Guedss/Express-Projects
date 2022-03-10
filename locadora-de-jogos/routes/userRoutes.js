@@ -46,6 +46,21 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
     }
 }));
 
+function validateReadRequest (user, id) {
+    try {
+        if (!user) {
+            return 404;
+        }
+        if (!parseInt(id)) {
+            return 400;
+        }
+        return 200;
+    }
+    catch {
+        return 500;
+    }
+}
+
 
 // Rotas UPDATE
 router.put('/', async (req, res) => {
