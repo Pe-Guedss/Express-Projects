@@ -48,7 +48,7 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
         res.status(status).json(user);
     }
     catch (error) {
-        next(createError(500, `An error ocurred when trying get the user with Primary key: ${id}.`, error));
+        next(createError(500, `An error ocurred when trying get the user with Primary key: ${id}. Error -> ${error}`));
         return;
     }
 }));
