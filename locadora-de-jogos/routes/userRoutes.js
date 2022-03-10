@@ -39,9 +39,9 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
     try {
         const user = await Usuarios.findByPk(id);
 
-        const status = validateReadRequest(user, id);
+        const { status, message } = validateReadRequest(user, id);
         if (status != 200) {
-            next(createError(status, `An error ocurred when trying get the user with Primary key: ${id}.`));
+            next(createError(status, message));
             return;
         }
 
@@ -55,16 +55,24 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
 
 function validateReadRequest (user, id) {
     try {
-        if (!user) {
-            return 404;
-        }
         if (!parseInt(id)) {
-            return 400;
+            return {status: 400,
+                    message: `User ID: ${id} is invalid!`
+                };
         }
-        return 200;
+        if (!user) {
+            return {status: 404,
+                    message: `User with ID: ${id} was not found!`
+                };
+        }
+        return {status: 200,
+                message: ''
+            };
     }
     catch {
-        return 500;
+        return {status: 500,
+                message: `An internal error occurred when validating the data from user with ID: ${id}!`
+            };
     }
 }
 
