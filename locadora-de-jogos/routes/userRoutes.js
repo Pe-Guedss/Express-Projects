@@ -55,7 +55,7 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
 
 function validateReadRequest (user, id) {
     try {
-        if (!parseInt(id)) {
+        if ( !/^\d+$/.test(id) ) {
             return {status: 400,
                     message: `User ID: ${id} is invalid!`
                 };
