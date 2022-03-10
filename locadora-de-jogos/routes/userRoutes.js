@@ -38,7 +38,14 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
     const { id } = req.params;
     try {
         const user = await Usuarios.findByPk(id);
-        res.status(200).json(user);
+
+        const status = validateReadRequest(user, id);
+        if (status != 200) {
+            next(createError(status, `An error ocurred when trying get the user with Primary key: ${id}.`));
+            return;
+        }
+
+        res.status(status).json(user);
     }
     catch (error) {
         next(createError(500, `An error ocurred when trying get the user with Primary key: ${id}.`, error));
