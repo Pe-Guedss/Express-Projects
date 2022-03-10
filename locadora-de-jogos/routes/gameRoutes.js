@@ -22,7 +22,7 @@ router.get('/read_all/', asyncHandler (async (req, res, next) => {
         res.status(200).json(games);
     }
     catch (error) {
-        next(createError(500, 'An error ocurred when trying to retrieve all data from the table "Jogos".', error));
+        next(createError(500, `An error ocurred when trying to retrieve all data from the table: Jogos. Error -> ${error}`));
         return;
     }
 }));
