@@ -41,7 +41,7 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
         res.status(200).json(game);
     }
     catch (error) {
-        next(createError(500, `An error ocurred when trying get the game with Primary key: ${id}.`, error));
+        next(createError(500, `An error ocurred when trying get the game with Primary key: ${id}. Error -> ${error}`));
         return;
     }
 }));
