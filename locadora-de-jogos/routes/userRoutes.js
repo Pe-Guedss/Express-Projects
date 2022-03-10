@@ -38,7 +38,9 @@ router.put('/', async (req, res) => {
 router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
     try {
         const users = await Usuarios.findAll();
-        users.destroy();
+        for (const user of users) {
+            user.destroy();
+        }
         res.status(200).json(users);
     }
     catch (error) {
@@ -47,18 +49,49 @@ router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
     }
 }));
 
-router.delete('/delete/by_pk/:pk', asyncHandler (async (req, res, next) => {
-    const { pk } = req.params
+router.delete('/delete/by_id/:id', asyncHandler (async (req, res, next) => {
+    const { id } = req.params
     try {
-        const user = await Usuarios.findByPk(pk);
+        const user = await Usuarios.findByPk(id);
+        
+        const { status, message } = validateDeleteRequest(user, id);
+        if (status != 200) {
+            next(createError(status, message));
+            return;
+        }
         user.destroy();
-        res.status(200).json(user);
+        res.status(status).json(user);
     }
     catch (error) {
-        next(createError(500, `An error ocurred when trying to delete the user with Primary key: ${pk}.`, error));
+        next(createError(500, `An error ocurred when trying to delete the user with Primary key: ${id}. Error -> ${error}`));
         return;
     }
 }));
+
+function validateDeleteRequest (user, id) {
+    try {
+        if ( !/^\d+$/.test(id) ) {
+            return {status: 400,
+                    message: `User ID: ${id} is invalid!`
+                };
+        }
+        if (!user) {
+            return {status: 404,
+                    message: `User with ID: ${id} was not found!`
+                };
+        }
+        return {status: 200,
+                message: ''
+            };
+    }
+    catch {
+        return {status: 500,
+                message: `An internal error occurred when validating the data from user with ID: ${id}!`
+            };
+    }
+}
+
+
 
 
 
