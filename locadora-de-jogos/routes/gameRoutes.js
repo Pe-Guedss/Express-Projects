@@ -22,9 +22,29 @@ router.get('/', async (req, res) => {
 
 
 // Rotas UPDATE
-router.put('/', async (req, res) => {
-    res.status(404).send('Implementar rota UPDATE.')
+router.put('/update/by_id/:id', async(req,res) =>{
+    const id = req.params.id;
+    const body = req.body;
+    const jogo = await Jogos.findByPk(id);
+    if(Object.keys(body).length === 0 ){
+        res.status(404).send("there's nothing in the body to be updated");
+        return;
+    }
+    if(!jogo){
+        res.status(404).send(`there's no game with id number ${id}`);
+        return;
+    }
+    for(let property in body){
+        if(!jogo[property]){
+            res.status(404).send(`Property called ${property} was not found`);
+            return;
+        }   
+        jogo[property] = body[property];
+    }
+    jogo.save();
+    res.status(200).send('everthing was update sucessfuly');
 });
+
 
 
 // Rotas DELETE
