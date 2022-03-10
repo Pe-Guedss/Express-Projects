@@ -34,14 +34,14 @@ router.get('/read_all/', asyncHandler (async (req, res, next) => {
     }
 }));
 
-router.get('/read/by_pk/:pk', asyncHandler (async (req, res, next) => {
-    const { pk } = req.params
+router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
+    const { id } = req.params;
     try {
-        const user = await Usuarios.findByPk(pk);
+        const user = await Usuarios.findByPk(id);
         res.status(200).json(user);
     }
     catch (error) {
-        next(createError(500, `An error ocurred when trying get the user with Primary key: ${pk}.`, error));
+        next(createError(500, `An error ocurred when trying get the user with Primary key: ${id}.`, error));
         return;
     }
 }));
