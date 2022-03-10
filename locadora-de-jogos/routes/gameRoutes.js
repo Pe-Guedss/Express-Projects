@@ -39,6 +39,29 @@ router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
     }
 }));
 
+function validateReadRequest (game, id) {
+    try {
+        if ( !/^\d+$/.test(id) ) {
+            return {status: 400,
+                    message: `Game ID: ${id} is invalid!`
+                };
+        }
+        if (!game) {
+            return {status: 404,
+                    message: `Game with ID: ${id} was not found!`
+                };
+        }
+        return {status: 200,
+                message: ''
+            };
+    }
+    catch {
+        return {status: 500,
+                message: `An internal error occurred when validating the data from Game with ID: ${id}!`
+            };
+    }
+}
+
 
 // Rotas UPDATE
 router.put('/', async (req, res) => {
