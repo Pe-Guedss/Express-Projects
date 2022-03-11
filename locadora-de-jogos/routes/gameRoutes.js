@@ -4,25 +4,36 @@ const router = express.Router();
 // Constantes para manejamento de excessões
 const asyncHandler = require('express-async-handler');
 const createError = require('http-errors');
+const Jogo = require('../models/Jogo');
 
 const Jogos = require('../models/Jogo');
 
 router.use(express.json());
 
 // Rotas CREATE
-router.post('/', async (req, res) => {
-    const body = req.body;
-    const jogo = {
-        nome_principal: body.nome_principal,
-        nome: body.nome,
-        ano: body.ano,
-        preco: body.preco,
-        genero: body.genero,
-        IdUsuario: body.IdUsuario
+router.post('/create', asyncHandler(async (req, res, next) => {
+    try{
+        const jogo = req.body;
+        let count = 0;
+        const attributes = Jogos.getAttributes();
+        for(let property in jogo){
+            if(!attributes[property]){
+                count++;
+            }
+        }
+        if(count == 0 && jogo.IdUsuario!=null){
+            await Jogos.create(jogo);
+            res.status(200).send(jogo);
+        }
+        else{
+            res.status(404).send('Some property sended in the body was not found');
+        }
     }
-    await Jogos.create(jogo);
-    res.status(200).send(jogo);
-});
+    catch{
+        next(createError(500, `An error ocurred when trying to create a game. Error -> ${error}`));
+        return;
+    }
+}));
 
 
 // Rotas READ
