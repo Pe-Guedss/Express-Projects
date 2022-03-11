@@ -29,28 +29,36 @@ router.get('/', async (req, res) => {
 
 
 // Rotas UPDATE
-router.put('/update/by_id/:id', async(req,res) =>{
+
+router.put('/update/by_id/:id', asyncHandler(async(req,res,next) =>{
     const id = req.params.id;
     const body = req.body;
-    const usuario = await Usuarios.findByPk(id);
-    if(Object.keys(body).length === 0 ){
-        res.status(404).send("there's nothing in the body to be updated");
-        return;
-    }
-    if(!usuario){
-        res.status(404).send(`there's no user with id number ${id}`);
-        return;
-    }
-    for(let property in body){
-        if(!usuario[property]){
-            res.status(404).send(`Property called ${property} was not found`);
+    try{
+        const usuario = await Usuarios.findByPk(id);
+        if(Object.keys(body).length === 0 ){
+            res.status(404).send("there's nothing in the body to be updated");
             return;
-        }   
-        usuario[property] = body[property];
+        }
+        if(!usuario){
+            res.status(404).send(`there's no user with id number ${id}`);
+            return;
+        }
+        for(let property in body){
+            if(!usuario[property]){
+                res.status(404).send(`Property called ${property} was not found`);
+                return;
+            }   
+            usuario[property] = body[property];
+        }
+        usuario.save();
+        res.status(200).send('everthing was update sucessfuly');
+    }catch(error){
+        next(createError(500,`An error ocurred when trying to update the data from the table: Usuarios. \n Error -> ${error}`));
     }
-    usuario.save();
-    res.status(200).send('everthing was update sucessfuly');
-});
+
+    
+    
+}));
 
 
 // Rotas DELETE

@@ -22,28 +22,32 @@ router.get('/', async (req, res) => {
 
 
 // Rotas UPDATE
-router.put('/update/by_id/:id', async(req,res) =>{
+router.put('/update/by_id/:id', asyncHandler(async(req,res) =>{
     const id = req.params.id;
     const body = req.body;
-    const jogo = await Jogos.findByPk(id);
-    if(Object.keys(body).length === 0 ){
-        res.status(404).send("there's nothing in the body to be updated");
-        return;
-    }
-    if(!jogo){
-        res.status(404).send(`there's no game with id number ${id}`);
-        return;
-    }
-    for(let property in body){
-        if(!jogo[property]){
-            res.status(404).send(`Property called ${property} was not found`);
+    try{
+        const jogo = await Jogos.findByPk(id);
+        if(Object.keys(body).length === 0 ){
+            res.status(404).send("there's nothing in the body to be updated");
             return;
-        }   
-        jogo[property] = body[property];
+        }
+        if(!jogo){
+            res.status(404).send(`there's no game with id number ${id}`);
+            return;
+        }
+        for(let property in body){
+            if(!jogo[property]){
+                res.status(404).send(`Property called ${property} was not found`);
+                return;
+            }   
+            jogo[property] = body[property];
+        }
+        jogo.save();
+        res.status(200).send('everthing was update sucessfuly');
+    }catch(error){
+        next(createError(500,`An error ocurred when trying to update the data from the table: jogos\n Error -> ${error}`));
     }
-    jogo.save();
-    res.status(200).send('everthing was update sucessfuly');
-});
+}));
 
 
 
