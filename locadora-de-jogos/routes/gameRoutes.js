@@ -32,9 +32,9 @@ router.put('/', async (req, res) => {
 router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
     try {
         const games = await Jogos.findAll();
-        for (const jogo of games) {
-        jogo.destroy();
-    }
+        for (const game of games) {
+            game.destroy();
+        }
         res.status(200).json(games);
     }
     catch (error) {
@@ -53,10 +53,9 @@ router.delete('/delete/by_id/:id', asyncHandler (async (req, res, next) => {
             next(createError(status, message));
             return;
         }
+        
         game.destroy();
         res.status(status).json(game);
-
-
     }
     catch (error) {
         next(createError(500, `An error ocurred when trying to delete the game with Primary key: ${id}. Error -> ${error}`));
