@@ -77,11 +77,11 @@ router.put('/update/by_id/:id', asyncHandler(async(req,res) =>{
     try{
         const jogo = await Jogos.findByPk(id);
         if(Object.keys(body).length === 0 ){
-            res.status(404).send("there's nothing in the body to be updated");
+            res.status(404).send("There is nothing in the body to be updated");
             return;
         }
         if(!jogo){
-            res.status(404).send(`there's no game with id number ${id}`);
+            res.status(404).send(`There is no game with id number ${id}`);
             return;
         }
         for(let property in body){
@@ -92,9 +92,9 @@ router.put('/update/by_id/:id', asyncHandler(async(req,res) =>{
             jogo[property] = body[property];
         }
         jogo.save();
-        res.status(200).send('everthing was update sucessfuly');
+        res.status(200).send('Everything was updated successfully');
     }catch(error){
-        next(createError(500,`An error ocurred when trying to update the data from the table: jogos\n Error -> ${error}`));
+        next(createError(500,`An error ocurred when trying to update the data from the table: jogos. Error -> ${error}`));
     }
 }));
 
