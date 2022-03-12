@@ -71,10 +71,32 @@ function validateReadRequest (game, id) {
 
 
 // Rotas UPDATE
-router.put('/', async (req, res) => {
-    res.status(404).send('Implementar rota UPDATE.');
-});
-
+router.put('/update/by_id/:id', asyncHandler(async(req,res) =>{
+    const id = req.params.id;
+    const body = req.body;
+    try{
+        const jogo = await Jogos.findByPk(id);
+        if(Object.keys(body).length === 0 ){
+            res.status(404).send("There is nothing in the body to be updated");
+            return;
+        }
+        if(!jogo){
+            res.status(404).send(`There is no game with id number ${id}`);
+            return;
+        }
+        for(let property in body){
+            if(!jogo[property]){
+                res.status(404).send(`Property called ${property} was not found`);
+                return;
+            }   
+            jogo[property] = body[property];
+        }
+        jogo.save();
+        res.status(200).send('Everything was updated successfully');
+    }catch(error){
+        next(createError(500,`An error ocurred when trying to update the data from the table: jogos. Error -> ${error}`));
+    }
+}));
 
 
 // Rotas DELETE
