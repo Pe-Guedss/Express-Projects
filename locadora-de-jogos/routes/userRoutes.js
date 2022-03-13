@@ -10,16 +10,24 @@ const Usuarios = require('../models/Usuario');
 router.use(express.json());
 
 // Rotas CREATE
-router.post('/', async (req, res) => {
-    const body = req.body;
-    const usuario = {
-        nome: body.nome,
-        email: body.email,
-        senha: body.senha
+router.post('/create', asyncHandler(async (req, res, next) => {
+    try{
+        const usuario = req.body;
+        const attributes = Usuarios.getAttributes();
+        for(let property in usuario){
+            if(!attributes[property]){
+                res.status(404).send('Some property sended in the body was not found');
+                return;
+            }
+        }
+        await Usuarios.create(usuario);
+        res.status(200).send(usuario);
     }
-    await Usuarios.create(usuario);
-    res.status(200).send(usuario);
-});
+    catch(error){
+        next(createError(500, `An error ocurred when trying to create a user. Error -> ${error}`));
+        return;
+    }
+}));
 
 
 // Rotas READ

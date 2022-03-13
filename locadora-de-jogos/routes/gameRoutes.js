@@ -10,9 +10,24 @@ const Jogos = require('../models/Jogo');
 router.use(express.json());
 
 // Rotas CREATE
-router.post('/', async (req, res) => {
-    res.status(404).send('Implementar rota POST.');
-});
+router.post('/create', asyncHandler(async (req, res, next) => {
+    try{
+        const jogo = req.body;
+        const attributes = Jogos.getAttributes();
+        for(let property in jogo){
+            if(!attributes[property]){
+                res.status(404).send('Some property sended in the body was not found');
+                return;
+            }
+        }
+        await Jogos.create(jogo);
+        res.status(200).send(jogo);
+    }
+    catch(error){
+        next(createError(500, `An error ocurred when trying to create a game. Error -> ${error}`));
+        return;
+    }
+}));
 
 
 // Rotas READ
@@ -155,7 +170,7 @@ function validateDeleteRequest (game, id) {
                 message: `An internal error occurred when validating the data from Game with ID: ${id}!`
             };
     }
-});
+}
 
 
 
