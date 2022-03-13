@@ -13,20 +13,15 @@ router.use(express.json());
 router.post('/create', asyncHandler(async (req, res, next) => {
     try{
         const usuario = req.body;
-        let count=0;
         const attributes = Usuarios.getAttributes();
         for(let property in usuario){
             if(!attributes[property]){
-                count++;
+                res.status(404).send('Some property sended in the body was not found');
+                return;
             }
         }
-        if(count == 0){
-            await Usuarios.create(usuario);
-            res.status(200).send(usuario);
-        }
-        else{
-            res.status(404).send('Some property sended in the body was not found');
-        }
+        await Usuarios.create(usuario);
+        res.status(200).send(usuario);
     }
     catch(error){
         next(createError(500, `An error ocurred when trying to create a user. Error -> ${error}`));

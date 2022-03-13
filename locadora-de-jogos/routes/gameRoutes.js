@@ -13,22 +13,17 @@ router.use(express.json());
 router.post('/create', asyncHandler(async (req, res, next) => {
     try{
         const jogo = req.body;
-        let count = 0;
         const attributes = Jogos.getAttributes();
         for(let property in jogo){
             if(!attributes[property]){
-                count++;
+                res.status(404).send('Some property sended in the body was not found');
+                return;
             }
         }
-        if(count == 0 && jogo.IdUsuario!=null){
-            await Jogos.create(jogo);
-            res.status(200).send(jogo);
-        }
-        else{
-            res.status(404).send('Some property sended in the body was not found');
-        }
+        await Jogos.create(jogo);
+        res.status(200).send(jogo);
     }
-    catch{
+    catch(error){
         next(createError(500, `An error ocurred when trying to create a game. Error -> ${error}`));
         return;
     }
@@ -175,7 +170,7 @@ function validateDeleteRequest (game, id) {
                 message: `An internal error occurred when validating the data from Game with ID: ${id}!`
             };
     }
-});
+};
 
 
 
