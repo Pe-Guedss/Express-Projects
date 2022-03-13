@@ -170,7 +170,7 @@ function validateDeleteRequest (game, id) {
                 message: `An internal error occurred when validating the data from Game with ID: ${id}!`
             };
     }
-};
+}
 
 
 
