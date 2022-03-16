@@ -56,7 +56,7 @@ router.post('/create', asyncHandler(async (req, res, next) => {
         const usuario = req.body;
         const attributes = Usuarios.getAttributes();
         for(let property in usuario){
-            if(!attributes[property] && property!="creds"){
+            if( !attributes[property] ){
                 res.status(404).send('Some property sended in the body was not found');
                 return;
             }
