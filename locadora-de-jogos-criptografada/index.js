@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express ();
+
 const bcrypt = require('bcrypt');
+
+const asyncHandler = require('express-async-handler');
+const createError = require('http-errors');
 
 app.use (express.json());
 app.use (express.urlencoded({
@@ -9,15 +13,16 @@ app.use (express.urlencoded({
 
 const Usuarios = require('./models/Usuario'); 
 
-app.use(async (req, res, next) => {
+app.use(asyncHandler (async (req, res, next) => {
 
     try {
         const { creds } = req.body;
-        if(!creds){
-            next()
+        const { email, senha } = creds;
+
+        if(!email || !senha){
+            next(createError(400, 'either email or senha are missing in the request body'));
             return;
         }
-        const { email, senha } = creds;
 
         const users = await Usuarios.findAll({where: {
             email: email
@@ -42,7 +47,7 @@ app.use(async (req, res, next) => {
         next(err);
         return;
     }
-});
+}));
 
 const userRouter = require('./routes/userRoutes');
 const gameRouter = require('./routes/gameRoutes');
