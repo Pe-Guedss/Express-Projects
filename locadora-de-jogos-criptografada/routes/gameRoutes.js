@@ -6,6 +6,9 @@ const asyncHandler = require('express-async-handler');
 const createError = require('http-errors');
 
 const Jogos = require('../models/Jogo');
+const Usuarios = require('../models/Usuario')
+
+const bcrypt = require('bcrypt');
 
 router.use(express.json());
 
@@ -50,12 +53,12 @@ const authenticateRequest = async (req, res, next) => {
 }
 
 // Rotas CREATE
-router.post('/create', asyncHandler(async (req, res, next) => {
+router.post('/create', asyncHandler(authenticateRequest), asyncHandler(async (req, res, next) => {
     try{
         const jogo = req.body;
         const attributes = Jogos.getAttributes();
         for(let property in jogo){
-            if(!attributes[property]){
+            if(!attributes[property] && property !== "creds"){
                 res.status(404).send('Some property sended in the body was not found');
                 return;
             }
@@ -71,7 +74,7 @@ router.post('/create', asyncHandler(async (req, res, next) => {
 
 
 // Rotas READ
-router.get('/read_all/', asyncHandler (async (req, res, next) => {
+router.get('/read_all/', asyncHandler(authenticateRequest), asyncHandler (async (req, res, next) => {
     try {
         const games = await Jogos.findAll();
         res.status(200).json(games);
@@ -82,7 +85,7 @@ router.get('/read_all/', asyncHandler (async (req, res, next) => {
     }
 }));
 
-router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
+router.get('/read/by_id/:id', asyncHandler(authenticateRequest), asyncHandler (async (req, res, next) => {
     const { id } = req.params
     try {
         const game = await Jogos.findByPk(id);
@@ -126,7 +129,7 @@ function validateReadRequest (game, id) {
 
 
 // Rotas UPDATE
-router.put('/update/by_id/:id', asyncHandler(async(req,res) =>{
+router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(async(req,res) =>{
     const id = req.params.id;
     const body = req.body;
     try{
@@ -140,7 +143,7 @@ router.put('/update/by_id/:id', asyncHandler(async(req,res) =>{
             return;
         }
         for(let property in body){
-            if(!jogo[property]){
+            if(!jogo[property] && property !== "creds"){
                 res.status(404).send(`Property called ${property} was not found`);
                 return;
             }   
@@ -155,7 +158,7 @@ router.put('/update/by_id/:id', asyncHandler(async(req,res) =>{
 
 
 // Rotas DELETE
-router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
+router.delete('/delete_all/', asyncHandler(authenticateRequest), asyncHandler (async (req, res, next) => {
     try {
         const games = await Jogos.findAll();
         for (const game of games) {
@@ -169,7 +172,7 @@ router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
     }
 }));
 
-router.delete('/delete/by_id/:id', asyncHandler (async (req, res, next) => {
+router.delete('/delete/by_id/:id', asyncHandler(authenticateRequest), asyncHandler (async (req, res, next) => {
     const { id } = req.params
     try {
         const game = await Jogos.findByPk(id);
