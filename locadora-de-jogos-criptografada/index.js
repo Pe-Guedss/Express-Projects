@@ -18,24 +18,24 @@ app.use(asyncHandler (async (req, res, next) => {
     try {
         const { creds } = req.body;
         if (!creds) {
-            next(createError(400, 'this request body requires a creds property containing the user data to login'));
+            next(createError(400, 'Bad Request: this request body requires a creds property containing the user data to login'));
             return;
         }
 
         const { email, senha } = creds;
         if(!email || !senha){
-            next(createError(400, 'either email or senha are missing in the request body'));
+            next(createError(400, 'Bad Request: either email or senha are missing in the request body'));
             return;
         }
 
         const users = await Usuarios.findAll({where: {
             email: email
         }});
-
         if (users.length === 0) {
-            res.status(404).send("User not found.");
+            next(createError(404, 'Not Found: there was no matches in our database for the informed credentials. Please consider signing in'));
             return;
         }
+        
         const dataBaseSenha = users[0].dataValues.senha;
         const autenticacao = await bcrypt.compare(senha, dataBaseSenha);
         if(autenticacao){
