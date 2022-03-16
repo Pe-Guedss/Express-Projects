@@ -9,6 +9,46 @@ const Jogos = require('../models/Jogo');
 
 router.use(express.json());
 
+const authenticateRequest = async (req, res, next) => {
+
+    try {
+        const { creds } = req.body;
+        if (!creds) {
+            next(createError(400, 'Bad Request: this request body requires a creds property containing the user data to login'));
+            return;
+        }
+
+        const { email, senha } = creds;
+        if(!email || !senha){
+            next(createError(400, 'Bad Request: either email or senha are missing in the request body'));
+            return;
+        }
+
+        const users = await Usuarios.findAll({where: {
+            email: email
+        }});
+        if (users.length === 0) {
+            next(createError(404, 'Not Found: there was no matches in our database for the informed email credential. Please consider signing in'));
+            return;
+        }
+
+        const dataBaseSenha = users[0].dataValues.senha;
+        const autenticacao = await bcrypt.compare(senha, dataBaseSenha);
+        if(autenticacao){
+            next()
+            return;
+        }
+        else{
+            res.status(400).send("Wrong password!");
+            return;
+        }
+    } 
+    catch (err) {
+        next(err);
+        return;
+    }
+}
+
 // Rotas CREATE
 router.post('/create', asyncHandler(async (req, res, next) => {
     try{
