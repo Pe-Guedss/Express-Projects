@@ -17,8 +17,12 @@ app.use(asyncHandler (async (req, res, next) => {
 
     try {
         const { creds } = req.body;
-        const { email, senha } = creds;
+        if (!creds) {
+            next(createError(400, 'this request body requires a creds property containing the user data to login'));
+            return;
+        }
 
+        const { email, senha } = creds;
         if(!email || !senha){
             next(createError(400, 'either email or senha are missing in the request body'));
             return;
