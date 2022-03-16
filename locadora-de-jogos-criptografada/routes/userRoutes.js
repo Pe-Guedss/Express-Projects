@@ -10,6 +10,46 @@ const Usuarios = require('../models/Usuario');
 
 router.use(express.json());
 
+const authenticateRequest = async (req, res, next) => {
+
+    try {
+        const { creds } = req.body;
+        if (!creds) {
+            next(createError(400, 'Bad Request: this request body requires a creds property containing the user data to login'));
+            return;
+        }
+
+        const { email, senha } = creds;
+        if(!email || !senha){
+            next(createError(400, 'Bad Request: either email or senha are missing in the request body'));
+            return;
+        }
+
+        const users = await Usuarios.findAll({where: {
+            email: email
+        }});
+        if (users.length === 0) {
+            next(createError(404, 'Not Found: there was no matches in our database for the informed email credential. Please consider signing in'));
+            return;
+        }
+
+        const dataBaseSenha = users[0].dataValues.senha;
+        const autenticacao = await bcrypt.compare(senha, dataBaseSenha);
+        if(autenticacao){
+            next()
+            return;
+        }
+        else{
+            res.status(400).send("Wrong password!");
+            return;
+        }
+    } 
+    catch (err) {
+        next(err);
+        return;
+    }
+}
+
 // Rotas CREATE
 router.post('/create', asyncHandler(async (req, res, next) => {
     try{
@@ -42,7 +82,7 @@ router.post('/create', asyncHandler(async (req, res, next) => {
 
 
 // Rotas READ
-router.get('/read_all/', asyncHandler (async (req, res, next) => {
+router.get('/read_all/', asyncHandler(authenticateRequest), asyncHandler (async (req, res, next) => {
     try {
         const users = await Usuarios.findAll();
         res.status(200).json(users);
@@ -53,7 +93,7 @@ router.get('/read_all/', asyncHandler (async (req, res, next) => {
     }
 }));
 
-router.get('/read/by_id/:id', asyncHandler (async (req, res, next) => {
+router.get('/read/by_id/:id', asyncHandler(authenticateRequest), asyncHandler (async (req, res, next) => {
     const { id } = req.params;
     try {
         const user = await Usuarios.findByPk(id);
@@ -98,7 +138,7 @@ function validateReadRequest (user, id) {
 
 // Rotas UPDATE
 
-router.put('/update/by_id/:id', asyncHandler(async(req,res,next) =>{
+router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(async(req,res,next) =>{
     const id = req.params.id;
     const body = req.body;
     try{
@@ -149,7 +189,7 @@ router.put('/update/by_id/:id', asyncHandler(async(req,res,next) =>{
 
 
 // Rotas DELETE
-router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
+router.delete('/delete_all/', asyncHandler(authenticateRequest), asyncHandler (async (req, res, next) => {
     try {
         const users = await Usuarios.findAll();
         for (const user of users) {
@@ -163,7 +203,7 @@ router.delete('/delete_all/', asyncHandler (async (req, res, next) => {
     }
 }));
 
-router.delete('/delete/by_id/:id', asyncHandler (async (req, res, next) => {
+router.delete('/delete/by_id/:id', asyncHandler(authenticateRequest), asyncHandler (async (req, res, next) => {
     const { id } = req.params
     try {
         const user = await Usuarios.findByPk(id);
@@ -206,9 +246,7 @@ function validateDeleteRequest (user, id) {
 }
 
 
-
-
-
+// Error Middleware
 router.use((error, req, res, next) => {
     // Seta o HTTP Status Code
     res.status(error.status || 500);
