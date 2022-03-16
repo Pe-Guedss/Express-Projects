@@ -59,6 +59,16 @@ const gameRouter = require('./routes/gameRoutes');
 app.use('/users', userRouter);
 app.use('/games', gameRouter);
 
+app.use((error, req, res, next) => {
+    // Seta o HTTP Status Code
+    res.status(error.status || 500);
+  
+    // Envia a resposta
+    res.json({
+        status: error.status,
+        message: error.message
+    })
+});
 
 app.listen (3000, () => {
     console.log('Server started on port 3000.');
