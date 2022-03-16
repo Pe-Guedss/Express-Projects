@@ -16,15 +16,24 @@ router.post('/create', asyncHandler(async (req, res, next) => {
         const usuario = req.body;
         const attributes = Usuarios.getAttributes();
         for(let property in usuario){
-            if(!attributes[property]){
+            if(!attributes[property] && property!="creds"){
                 res.status(404).send('Some property sended in the body was not found');
                 return;
             }
         }
-        usuario.senha = await bcrypt.hash(usuario.senha, 10);
-        await Usuarios.create(usuario);
-        res.status(200).send(usuario);
-    }
+        const users = await Usuarios.findAll({where: {
+            email: usuario.email
+        }});
+        if(users.length === 0){
+            usuario.senha = await bcrypt.hash(usuario.senha, 10);
+            await Usuarios.create(usuario);
+            res.status(200).send(usuario);
+        }
+        else{
+            res.status(400).send('User already registered. Try another email!');
+            return;
+        }
+    }   
     catch(error){
         next(createError(500, `An error ocurred when trying to create a user. Error -> ${error}`));
         return;
@@ -102,15 +111,34 @@ router.put('/update/by_id/:id', asyncHandler(async(req,res,next) =>{
             res.status(404).send(`There is no user with id number ${id}`);
             return;
         }
-        for(let property in body){
-            if(!usuario[property]){
-                res.status(404).send(`Property called ${property} was not found`);
-                return;
-            }   
-            usuario[property] = body[property];
+        const users = await Usuarios.findAll({where: {
+            email: body.email
+        }});
+        if(body.creds.email!=usuario.email){
+            res.status(400).send('You are not allowed to change the user with this ID');
+            return;
         }
-        usuario.save();
-        res.status(200).send('Everything was updated successfully');
+        if(users.length === 0){
+            for(let property in body){
+                if(!usuario[property] && property!="creds"){
+                    res.status(404).send(`Property called ${property} was not found`);
+                    return;
+                }
+                if(property!="senha"){
+                    usuario[property] = body[property];
+                }  
+                else{
+                    usuario[property] = await bcrypt.hash(body.senha, 10);
+                }
+            }
+            usuario.save();
+            res.status(200).send('Everything was updated successfully');
+        }
+        else{
+            res.status(400).send('User already registered with this email. Try another email!');
+            return;
+        }
+        
     }catch(error){
         next(createError(500,`An error ocurred when trying to update the data from the table: Usuarios. Error -> ${error}`));
     }
