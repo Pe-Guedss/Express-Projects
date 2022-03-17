@@ -40,12 +40,12 @@ const authenticateRequest = async (req, res, next) => {
             return;
         }
         else{
-            res.status(400).send("Wrong password!");
+            next(createError(400, 'Wrong password'));
             return;
         }
     } 
     catch (err) {
-        next(err);
+        next(createError(500, `An error ocurred when trying to authenticate the login. Please try again later. Error -> ${err}`));
         return;
     }
 }
@@ -57,7 +57,7 @@ router.post('/create', asyncHandler(async (req, res, next) => {
         const attributes = Usuarios.getAttributes();
         for(let property in usuario){
             if( !attributes[property] ){
-                res.status(404).send('Some property sended in the body was not found');
+                next(createError(404, 'Some property sended in the body was not found'));
                 return;
             }
         }
@@ -70,7 +70,7 @@ router.post('/create', asyncHandler(async (req, res, next) => {
             res.status(200).send(usuario);
         }
         else{
-            res.status(400).send('User already registered. Try another email!');
+            next(createError(400, 'User already registered. Try another email'));
             return;
         }
     }   
@@ -144,24 +144,24 @@ router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(
     try{
         const usuario = await Usuarios.findByPk(id);
         if(Object.keys(body).length === 0 ){
-            res.status(404).send("There is nothing in the body to be updated");
+            next(createError(400, 'There is nothing in the body to be updated'));
             return;
         }
         if(!usuario){
-            res.status(404).send(`There is no user with id number ${id}`);
+            next(createError(404, 'There is no user with id number ${id}'));
             return;
         }
         const users = await Usuarios.findAll({where: {
             email: body.email
         }});
         if(body.creds.email!=usuario.email){
-            res.status(400).send('You are not allowed to change the user with this ID');
+            next(createError(401, 'You are not allowed to change the user with this ID'));
             return;
         }
         if(users.length === 0){
             for(let property in body){
                 if(!usuario[property] && property!="creds"){
-                    res.status(404).send(`Property called ${property} was not found`);
+                    next(createError(404, `Property called ${property} was not found`));
                     return;
                 }
                 if(property!="senha"){
@@ -175,7 +175,7 @@ router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(
             res.status(200).send('Everything was updated successfully');
         }
         else{
-            res.status(400).send('User already registered with this email. Try another email!');
+            next(createError(400, 'User already registered with this email. Try another email'));
             return;
         }
         
