@@ -58,9 +58,13 @@ router.post('/create', asyncHandler(authenticateRequest), asyncHandler(async (re
         const jogo = req.body;
         const attributes = Jogos.getAttributes();
         for (let property in jogo) {
-            if (!attributes[property] && property !== "creds"){
-                next(createError(400, 'Some property sended in the request body was not found'));
-                return;
+            if ( Object.keys(attributes).indexOf(property) === -1 ) {
+                if (property !== "creds") {
+                    console.log(jogo);
+                    next(createError(404, `Property called ${property} was not found`));
+                    return;
+                }
+                continue;
             }
         }
         await Jogos.create(jogo);
