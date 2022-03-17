@@ -37,11 +37,11 @@ const authenticateRequest = async (req, res, next) => {
 
         const dataBaseSenha = users[0].dataValues.senha;
         const autenticacao = await bcrypt.compare(senha, dataBaseSenha);
-        if(autenticacao){
+        if (autenticacao) {
             next()
             return;
         }
-        else{
+        else {
             res.status(400).send("Wrong password!");
             return;
         }
@@ -54,11 +54,11 @@ const authenticateRequest = async (req, res, next) => {
 
 // Rotas CREATE
 router.post('/create', asyncHandler(authenticateRequest), asyncHandler(async (req, res, next) => {
-    try{
+    try {
         const jogo = req.body;
         const attributes = Jogos.getAttributes();
-        for(let property in jogo){
-            if(!attributes[property] && property !== "creds"){
+        for (let property in jogo) {
+            if (!attributes[property] && property !== "creds"){
                 next(createError(400, 'Some property sended in the request body was not found'));
                 return;
             }
@@ -66,7 +66,7 @@ router.post('/create', asyncHandler(authenticateRequest), asyncHandler(async (re
         await Jogos.create(jogo);
         res.status(200).send(jogo);
     }
-    catch(error){
+    catch (error) {
         next(createError(500, `An error ocurred when trying to create a game. Error -> ${error}`));
         return;
     }
@@ -132,18 +132,18 @@ function validateReadRequest (game, id) {
 router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(async(req, res, next) =>{
     const id = req.params.id;
     const body = req.body;
-    try{
+    try {
         const jogo = await Jogos.findByPk(id);
-        if(Object.keys(body).length === 0 ){
+        if (Object.keys(body).length === 0) {
             next(createError(400, 'There is nothing in the body to be updated'));
             return;
         }
-        if(!jogo){
+        if (!jogo) {
             next(createError(404, `There is no game with id number ${id}`));
             return;
         }
-        for(let property in body){
-            if( Object.keys(jogo.dataValues).indexOf(property) === -1 ){
+        for (let property in body) {
+            if ( Object.keys(jogo.dataValues).indexOf(property) === -1 ) {
                 if (property !== "creds") {
                     console.log(jogo);
                     next(createError(404, `Property called ${property} was not found`));
@@ -155,7 +155,8 @@ router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(
         }
         jogo.save();
         res.status(200).send('Everything was updated successfully');
-    }catch(error){
+    }
+    catch (error) {
         next(createError(500,`An error ocurred when trying to update the data from the table: jogos. Error -> ${error}`));
     }
 }));
@@ -220,7 +221,7 @@ function validateDeleteRequest (game, id) {
 }
 
 
-
+// Error Middleware
 router.use((error, req, res, next) => {
     // Seta o HTTP Status Code
     res.status(error.status || 500);
