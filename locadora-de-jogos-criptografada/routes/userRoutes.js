@@ -141,50 +141,38 @@ function validateReadRequest (user, id) {
 router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(async(req,res,next) =>{
     const id = req.params.id;
     const body = req.body;
-    try{
+    try {
         const usuario = await Usuarios.findByPk(id);
-        if(Object.keys(body).length === 0 ){
+        if(Object.keys(body).length === 0){
             next(createError(400, 'There is nothing in the body to be updated'));
             return;
         }
         if(!usuario){
-            next(createError(404, 'There is no user with id number ${id}'));
+            next(createError(404, `There is no user with id number ${id}`));
             return;
         }
-        const users = await Usuarios.findAll({where: {
-            email: body.email
-        }});
-        if(body.creds.email!=usuario.email){
+        if(body.creds.email !== usuario.email){
             next(createError(401, 'You are not allowed to change the user with this ID'));
             return;
         }
-        if(users.length === 0){
-            for(let property in body){
-                if(!usuario[property] && property!="creds"){
-                    next(createError(404, `Property called ${property} was not found`));
-                    return;
-                }
-                if(property!="senha"){
-                    usuario[property] = body[property];
-                }  
-                else{
-                    usuario[property] = await bcrypt.hash(body.senha, 10);
-                }
+        for(let property in body){
+            if(!usuario[property] && property!="creds"){
+                next(createError(404, `Property called ${property} was not found`));
+                return;
             }
-            usuario.save();
-            res.status(200).send('Everything was updated successfully');
+            if(property!="senha"){
+                usuario[property] = body[property];
+            }  
+            else{
+                usuario[property] = await bcrypt.hash(body.senha, 10);
+            }
         }
-        else{
-            next(createError(400, 'User already registered with this email. Try another email'));
-            return;
-        }
-        
-    }catch(error){
+        usuario.save();
+        res.status(200).send('Everything was updated successfully');   
+    }
+    catch(error) {
         next(createError(500,`An error ocurred when trying to update the data from the table: Usuarios. Error -> ${error}`));
     }
-
-    
-    
 }));
 
 
