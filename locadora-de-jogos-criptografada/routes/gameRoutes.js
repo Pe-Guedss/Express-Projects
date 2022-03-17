@@ -129,7 +129,7 @@ function validateReadRequest (game, id) {
 
 
 // Rotas UPDATE
-router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(async(req,res) =>{
+router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(async(req, res, next) =>{
     const id = req.params.id;
     const body = req.body;
     try{
@@ -143,9 +143,13 @@ router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(
             return;
         }
         for(let property in body){
-            if(!jogo[property] && property !== "creds"){
-                next(createError(404, `Property called ${property} was not found`));
-                return;
+            if( Object.keys(jogo.dataValues).indexOf(property) === -1 ){
+                if (property !== "creds") {
+                    console.log(jogo);
+                    next(createError(404, `Property called ${property} was not found`));
+                    return;
+                }
+                continue;
             }   
             jogo[property] = body[property];
         }
