@@ -156,10 +156,14 @@ router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(
             return;
         }
         for(let property in body){
-            if(!usuario[property] && property!="creds"){
-                next(createError(404, `Property called ${property} was not found`));
-                return;
-            }
+            if( Object.keys(usuario.dataValues).indexOf(property) === -1 ){
+                if (property !== "creds") {
+                    console.log(jogo);
+                    next(createError(404, `Property called ${property} was not found`));
+                    return;
+                }
+                continue;
+            }   
             if(property!="senha"){
                 usuario[property] = body[property];
             }  
