@@ -20,7 +20,7 @@ const authenticateRequest = async (req, res, next) => {
         }
 
         const { email, senha } = creds;
-        if(!email || !senha){
+        if (!email || !senha) {
             next(createError(400, 'Bad Request: either email or senha are missing in the request body'));
             return;
         }
@@ -35,7 +35,7 @@ const authenticateRequest = async (req, res, next) => {
 
         const dataBaseSenha = users[0].dataValues.senha;
         const autenticacao = await bcrypt.compare(senha, dataBaseSenha);
-        if(autenticacao){
+        if (autenticacao) {
             next()
             return;
         }
@@ -52,11 +52,11 @@ const authenticateRequest = async (req, res, next) => {
 
 // Rotas CREATE
 router.post('/create', asyncHandler(async (req, res, next) => {
-    try{
+    try {
         const usuario = req.body;
         const attributes = Usuarios.getAttributes();
-        for(let property in usuario){
-            if( !attributes[property] ){
+        for (let property in usuario) {
+            if ( !attributes[property] ) {
                 next(createError(404, 'Some property sended in the body was not found'));
                 return;
             }
@@ -64,17 +64,17 @@ router.post('/create', asyncHandler(async (req, res, next) => {
         const users = await Usuarios.findAll({where: {
             email: usuario.email
         }});
-        if(users.length === 0){
+        if (users.length === 0) {
             usuario.senha = await bcrypt.hash(usuario.senha, 10);
             await Usuarios.create(usuario);
             res.status(200).send(usuario);
         }
-        else{
+        else {
             next(createError(400, 'User already registered. Try another email'));
             return;
         }
     }   
-    catch(error){
+    catch (error) {
         next(createError(500, `An error ocurred when trying to create a user. Error -> ${error}`));
         return;
     }
@@ -143,31 +143,30 @@ router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(
     const body = req.body;
     try {
         const usuario = await Usuarios.findByPk(id);
-        if(Object.keys(body).length === 0){
+        if (Object.keys(body).length === 0) {
             next(createError(400, 'There is nothing in the body to be updated'));
             return;
         }
-        if(!usuario){
+        if (!usuario) {
             next(createError(404, `There is no user with id number ${id}`));
             return;
         }
-        if(body.creds.email !== usuario.email){
+        if (body.creds.email !== usuario.email) {
             next(createError(401, 'You are not allowed to change the user with this ID'));
             return;
         }
-        for(let property in body){
+        for (let property in body) {
             if( Object.keys(usuario.dataValues).indexOf(property) === -1 ){
                 if (property !== "creds") {
-                    console.log(jogo);
                     next(createError(404, `Property called ${property} was not found`));
                     return;
                 }
                 continue;
             }   
-            if(property!="senha"){
+            if (property != "senha") {
                 usuario[property] = body[property];
             }  
-            else{
+            else {
                 usuario[property] = await bcrypt.hash(body.senha, 10);
             }
         }
