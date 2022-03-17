@@ -59,7 +59,7 @@ router.post('/create', asyncHandler(authenticateRequest), asyncHandler(async (re
         const attributes = Jogos.getAttributes();
         for(let property in jogo){
             if(!attributes[property] && property !== "creds"){
-                res.status(404).send('Some property sended in the body was not found');
+                next(createError(400, 'Some property sended in the request body was not found'));
                 return;
             }
         }
@@ -135,16 +135,16 @@ router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(
     try{
         const jogo = await Jogos.findByPk(id);
         if(Object.keys(body).length === 0 ){
-            res.status(404).send("There is nothing in the body to be updated");
+            next(createError(400, 'There is nothing in the body to be updated'));
             return;
         }
         if(!jogo){
-            res.status(404).send(`There is no game with id number ${id}`);
+            next(createError(404, `There is no game with id number ${id}`));
             return;
         }
         for(let property in body){
             if(!jogo[property] && property !== "creds"){
-                res.status(404).send(`Property called ${property} was not found`);
+                next(createError(404, `Property called ${property} was not found`));
                 return;
             }   
             jogo[property] = body[property];
