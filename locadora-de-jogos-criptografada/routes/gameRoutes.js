@@ -60,7 +60,6 @@ router.post('/create', asyncHandler(authenticateRequest), asyncHandler(async (re
         for (let property in jogo) {
             if ( Object.keys(attributes).indexOf(property) === -1 ) {
                 if (property !== "creds") {
-                    console.log(jogo);
                     next(createError(404, `Property called ${property} was not found`));
                     return;
                 }
@@ -149,7 +148,6 @@ router.put('/update/by_id/:id', asyncHandler(authenticateRequest), asyncHandler(
         for (let property in body) {
             if ( Object.keys(jogo.dataValues).indexOf(property) === -1 ) {
                 if (property !== "creds") {
-                    console.log(jogo);
                     next(createError(404, `Property called ${property} was not found`));
                     return;
                 }
