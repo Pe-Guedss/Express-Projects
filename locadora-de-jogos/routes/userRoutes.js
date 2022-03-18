@@ -16,7 +16,7 @@ router.post('/create', asyncHandler(async (req, res, next) => {
         const attributes = Usuarios.getAttributes();
         for(let property in usuario){
             if(!attributes[property]){
-                res.status(404).send('Some property sended in the body was not found');
+                next(createError(404, 'Some property sended in the body was not found'));
                 return;
             }
         }
@@ -93,16 +93,16 @@ router.put('/update/by_id/:id', asyncHandler(async(req,res,next) =>{
     try{
         const usuario = await Usuarios.findByPk(id);
         if(Object.keys(body).length === 0 ){
-            res.status(404).send("There is nothing in the body to be updated");
+            next(createError(404, 'There is nothing in the body to be updated'));
             return;
         }
         if(!usuario){
-            res.status(404).send(`There is no user with id number ${id}`);
+            next(createError(404, `There is no user with id number ${id}`));
             return;
         }
         for(let property in body){
             if(!usuario[property]){
-                res.status(404).send(`Property called ${property} was not found`);
+                next(createError(404, `Property called ${property} was not found`));
                 return;
             }   
             usuario[property] = body[property];
