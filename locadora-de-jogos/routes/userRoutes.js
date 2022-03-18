@@ -101,7 +101,7 @@ router.put('/update/by_id/:id', asyncHandler(async(req,res,next) =>{
             return;
         }
         for(let property in body){
-            if(!usuario[property]){
+            if( Object.keys(usuario.dataValues).indexOf(property) === -1 ){
                 next(createError(404, `Property called ${property} was not found`));
                 return;
             }   
